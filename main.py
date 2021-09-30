@@ -25,7 +25,7 @@ col3.metric(label='Objectivity', value='8.4', delta='-0.3')
 col4.metric(label='Fitness', value='6.2', delta='-1.2')
 
 st.markdown('---')
-st.header('🌱 ideogenesis')
+st.header('🐣 ideogenesis')
 st.caption('This is the rate at which you save new ideas to your conceptarium.')
 col1, col2, col3, col4 = st.columns(4)
 
@@ -36,15 +36,15 @@ col4.metric(label='population size', value='460')
 
 col1, col2 = st.columns(2)
 
-ideogenesis_per_day = np.random.randint(100, 200, (100))
+ideogenesis_per_day = np.random.randint(0, 20, (100))
 fig = px.line(ideogenesis_per_day, color_discrete_sequence=[
-    '#228b22'], title='ideogenesis per day')
+    '#228b22'], title='ideogenesis per day', line_shape='spline')
 fig.update_layout(showlegend=False)
 fig.update_xaxes(title_text='days ago', autorange='reversed')
 fig.update_yaxes(title_text='ideogenesis')
 col1.plotly_chart(fig)
 
-ideogenesis_by_day_of_the_week = np.random.choice(calendar.day_abbr[0:7], 400)
+ideogenesis_by_day_of_the_week = np.random.choice(calendar.day_abbr[0:7], 200)
 df = pd.DataFrame(ideogenesis_by_day_of_the_week, columns=['Time'])
 fig = px.histogram(df, x='Time', nbins=12, color_discrete_sequence=[
     '#228b22'], labels={'count': '', 'Time': ''}, category_orders={'Time': calendar.day_abbr[0:7]}, title='ideogenesis by day of the week')
@@ -54,7 +54,7 @@ fig.update_yaxes(title_text='ideogenesis')
 col2.plotly_chart(fig)
 
 ideogenesis_by_time_of_day = pd.DataFrame(
-    np.random.normal(1600, 200, 400))
+    np.random.normal(1600, 200, 200))
 fig = px.histogram(ideogenesis_by_time_of_day, nbins=12, color_discrete_sequence=[
     '#228b22'], labels={'count': '', 'Time': ''}, title='ideogenesis by time of day')
 fig.update_layout(bargap=0.2, showlegend=False)
@@ -62,8 +62,8 @@ fig.update_xaxes(title_text='time of day')
 fig.update_yaxes(title_text='ideogenesis')
 col1.plotly_chart(fig)
 
-ideogenesis_by_month = np.random.choice(calendar.month_abbr[1:13], 400)
-df = pd.DataFrame([e for e in zip(ideogenesis_by_day_of_the_week, np.random.normal(1600, 200, 400))],
+ideogenesis_by_month = np.random.choice(calendar.month_abbr[1:13], 200)
+df = pd.DataFrame([e for e in zip(ideogenesis_by_day_of_the_week, np.random.normal(1600, 200, 200))],
                   columns=['weekday', 'hour'])
 fig = px.density_heatmap(df, x='weekday', y='hour', category_orders={
     'weekday': calendar.day_abbr[0:7]}, color_continuous_scale=['#fffffd', '#228b22'], title='ideogenesis by day of the week and time of day')
@@ -87,7 +87,7 @@ col4.metric(label='memetic variability of fittest quartile', value='12')
 col1, col2 = st.columns(2)
 memetic_variability_per_week = np.random.uniform(5, 3, (20))
 fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-    '#228b22'], title='memetic variability per week')
+    '#228b22'], title='memetic variability per week', line_shape='spline')
 fig.update_layout(showlegend=False)
 fig.update_xaxes(title_text='weeks ago', autorange='reversed')
 fig.update_yaxes(title_text='memetic variability')
@@ -95,14 +95,14 @@ col1.plotly_chart(fig)
 
 memetic_variability_per_month = np.random.uniform(5, 3, (5))
 fig = px.line(memetic_variability_per_month, color_discrete_sequence=[
-    '#228b22'], title='memetic variability per month')
+    '#228b22'], title='memetic variability per month', line_shape='spline')
 fig.update_layout(showlegend=False)
 fig.update_xaxes(title_text='months ago', autorange='reversed')
 fig.update_yaxes(title_text='memetic variability')
 col2.plotly_chart(fig)
 
 st.markdown('---')
-st.header('⚓ memetic drift')
+st.header('🦕 memetic drift')
 st.caption(
     'This is a measure of how much you\'re shifting your focus from one period to the next.')
 col1, col2, col3, col4 = st.columns(4)
@@ -119,7 +119,7 @@ col4.metric(label='memetic drift over past month (% of max)',
 col1, col2 = st.columns(2)
 memetic_variability_per_week = np.random.uniform(5, 3, (20))
 fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-    '#228b22'], title='memetic drift per week')
+    '#228b22'], title='memetic drift per week', line_shape='spline')
 fig.update_layout(showlegend=False)
 fig.update_xaxes(title_text='weeks ago', autorange='reversed')
 fig.update_yaxes(title_text='memetic drift')
@@ -127,14 +127,14 @@ col1.plotly_chart(fig)
 
 memetic_variability_per_month = np.random.uniform(5, 3, (5))
 fig = px.line(memetic_variability_per_month, color_discrete_sequence=[
-    '#228b22'], title='memetic drift per month')
+    '#228b22'], title='memetic drift per month', line_shape='spline')
 fig.update_layout(showlegend=False)
 fig.update_xaxes(title_text='months ago', autorange='reversed')
 fig.update_yaxes(title_text='memetic drift')
 col2.plotly_chart(fig)
 
 st.markdown('---')
-st.header('🏅 memetic fitness')
+st.header('🦁 memetic fitness')
 st.caption(
     'The fitness of a thought is equated with how active it is in your mind. Powerful, catchy, gripping ideas are the ones on which you reflect most.')
 col1, col2, col3, col4 = st.columns(4)
@@ -150,7 +150,7 @@ col4.metric(label='memetic load',
 
 col1, col2 = st.columns(2)
 memetic_fitness = pd.DataFrame(
-    np.random.normal(20, 10, 400))
+    np.random.normal(20, 10, 200))
 fig = px.histogram(memetic_fitness, nbins=50, color_discrete_sequence=[
     '#228b22'], labels={'count': '', 'Time': ''}, title='memetic fitness distribution')
 fig.update_layout(bargap=0.2, showlegend=False)
@@ -166,6 +166,20 @@ fig.update_layout(bargap=0.2, showlegend=False)
 fig.update_xaxes(title_text='days ago', autorange='reversed')
 fig.update_yaxes(title_text='thought count')
 col2.plotly_chart(fig)
+
+st.markdown('---')
+st.header('🐇 population size')
+st.caption(
+    'This is a measure of how large the ecology of your mind is in terms of individual thoughts.')
+
+memetic_variability_per_month = [
+    sum(ideogenesis_per_day[e:]) for e in range(len(ideogenesis_per_day))]
+fig = px.line(memetic_variability_per_month, color_discrete_sequence=[
+    '#228b22'], title='', line_shape='spline')
+fig.update_layout(showlegend=False, width=1600)
+fig.update_xaxes(title_text='days ago', autorange='reversed')
+fig.update_yaxes(title_text='population size')
+st.plotly_chart(fig)
 
 st.markdown('---')
 
