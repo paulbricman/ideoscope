@@ -34,6 +34,7 @@ An instrument for quantifying, understanding, and optimizing your thinking, stru
     - 📰 readability
     - 📏 objectivity
     - 💚 sentiment
+    - 🎨 interests
 - 🖼️ semantics
     - 🔭 discovery
     - 🔬 projection
@@ -114,19 +115,19 @@ fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 col1.plotly_chart(fig)
 
 layout = go.Layout(yaxis=go.layout.YAxis(title='age (weeks)', showline=True, linewidth=1, linecolor='#474539', mirror=True),
-                   xaxis=go.layout.XAxis(range=[-10, 10], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
+                   xaxis=go.layout.XAxis(range=[-15, 15], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
                    barmode='overlay',
                    bargap=0.1,
                    title='population pyramid of fittest quartile')
 
-data = [go.Bar(x=-np.random.rand(10) * list(range(10, 0, -1)),
+data = [go.Bar(x=-(0.5+0.5*np.random.rand(10)) * list(range(10, 0, -1)),
                y=list(range(0, 10)),
                orientation='h',
                name='language',
                hoverinfo='x',
                marker=dict(color='#42D142')
                ),
-        go.Bar(x=np.random.rand(10) * list(range(10, 0, -1)),
+        go.Bar(x=(0.5+0.5*np.random.rand(10)) * list(range(10, 0, -1)),
                y=list(range(0, 10)),
                orientation='h',
                name='imagery',
@@ -231,13 +232,12 @@ fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 col1.plotly_chart(fig)
 
-memetic_fitness = pd.DataFrame(
-    np.random.randint(0, 100, 100))
-fig = px.histogram(memetic_fitness, nbins=20, color_discrete_sequence=[
-    '#228b22'], labels={'count': '', 'Time': ''}, title='birth rate of fittest quartile (days)')
-fig.update_layout(bargap=0.2, showlegend=False)
-fig.update_xaxes(title_text='days ago', autorange='reversed')
-fig.update_yaxes(title_text='thought count')
+memetic_fitness = np.abs(np.random.normal(0.1, 0.05, 20))
+fig = px.box(memetic_fitness, color_discrete_sequence=[
+    '#228b22'], title='fitness distribution')
+fig.update_layout(showlegend=False)
+fig.update_xaxes(title_text='')
+fig.update_yaxes(title_text='fitness')
 fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 col2.plotly_chart(fig)
@@ -347,6 +347,40 @@ fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 col2.plotly_chart(fig)
 
 st.markdown('---')
+st.header('📗 linguistics / 🎨 interests')
+st.caption(
+    'Those are keywords derived from your language thoughts.')
+col1, col2 = st.columns(2)
+
+df = pd.DataFrame([
+    dict(Task="solarpunk", Start='2021-01-01', Finish='2021-02-28'),
+    dict(Task="Dune", Start='2021-02-05', Finish='2021-04-15'),
+    dict(Task="conceptarium", Start='2021-02-20', Finish='2021-05-30'),
+    dict(Task="conceptors", Start='2021-03-01', Finish='2021-04-02'),
+    dict(Task="lighting", Start='2021-04-01', Finish='2021-05-10'),
+])
+
+fig = px.timeline(df, x_start="Start", x_end="Finish", y="Task", color_discrete_sequence=['#228b22'], text='Task', title='timeline of interests')
+fig.update_yaxes(autorange="reversed")
+fig.update_layout(showlegend=False)
+fig.update_xaxes(title_text='')
+fig.update_yaxes(title_text='', showticklabels=False)
+fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+col1.plotly_chart(fig)
+
+birth_rate_by_day_of_the_week = np.random.choice(['solarpunk','Dune', 'conceptarium', 'conceptors', 'lighting'], 200)
+df = pd.DataFrame(birth_rate_by_day_of_the_week, columns=['Time'])
+fig = px.histogram(df, x='Time', nbins=12, category_orders = {'Time': ['solarpunk','Dune', 'conceptarium', 'conceptors', 'lighting']}, color_discrete_sequence=[
+    '#228b22'], title='thoughts by interest')
+fig.update_layout(bargap=0.2)
+fig.update_xaxes(title_text='')
+fig.update_yaxes(title_text='count')
+fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+col2.plotly_chart(fig)
+
+st.markdown('---')
 st.header('🖼️ semantics / 🔭 discovery')
 st.caption('This is a measure of how much of the semantic space you\'ve explored through your ideas.')
 
@@ -398,11 +432,21 @@ st.header('🖼️ semantics / 🌌 projection')
 col1, col2 = st.columns(2)
 
 embeddings = [np.append(e, 0.5) for e in np.random.rand(300, 3)]
-fig = px.scatter_3d(pd.DataFrame(embeddings, columns=['x', 'y', 'z', 'size']), x='x', y='y', z='z', size='size', size_max=5, color_discrete_sequence=[
-    '#228b22'], title='low-dimensional projection')
+fig = px.scatter(pd.DataFrame(embeddings, columns=['x', 'y', 'z', 'size']), x='x', y='y', size='size', size_max=5, color_discrete_sequence=[
+    '#228b22'], title='2D projection')
 fig.update_layout(showlegend=False, margin=dict(l=0, r=0, b=0))
-fig.update_xaxes(title_text='weeks ago', autorange='reversed')
-fig.update_yaxes(title_text='explored proportion of semantic volume')
+fig.update_xaxes(title_text='')
+fig.update_yaxes(title_text='')
 fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 col1.plotly_chart(fig)
+
+embeddings = [np.append(e, 0.5) for e in np.random.rand(300, 3)]
+fig = px.scatter_3d(pd.DataFrame(embeddings, columns=['x', 'y', 'z', 'size']), x='x', y='y', z='z', size='size', size_max=5, color_discrete_sequence=[
+    '#228b22'], title='3D projection')
+fig.update_layout(showlegend=False, margin=dict(l=0, r=0, b=0))
+fig.update_xaxes(title_text='', autorange='reversed')
+fig.update_yaxes(title_text='')
+fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+col2.plotly_chart(fig)
