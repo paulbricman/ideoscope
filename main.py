@@ -19,30 +19,33 @@ option_timezone = st.sidebar.number_input(
     'What timezone are you in? (UTC+...)', step=1)
 
 
-st.title('ideoscope')
+st.title('🔬 ideoscope')
 
-st.markdown('''
-An instrument for quantifying, understanding, and optimizing your thinking, structured as follows:
-- 🌿 memetics
-    - 🐣 birth rate
-    - 🐇 population size
-    - 🐋 variability
-    - 🍃 drift
-    - 🦅 fitness
-- 📗 linguistics
-    - ⏱️ conciseness
-    - 📰 readability
-    - 📏 objectivity
-    - 💚 sentiment
-    - 🎨 interests
-- 🖼️ semantics
-    - 🔭 discovery
-    - 🔬 projection
+st.markdown('An instrument for quantifying, understanding, and optimizing your thinking, split into three sections:')
+
+col1, col2, col3 = st.columns(3)
+col1.markdown('''#### 🌿 memetics
+- 🐣 birth rate
+- 🐇 population size
+- 🐋 variability
+- 🍃 drift
+- 🦅 fitness
+''')
+col2.markdown('''#### 📗 linguistics
+- ⏱️ conciseness
+- 📰 readability
+- 📏 objectivity
+- 💚 sentiment
+- 🎨 interests
+''')
+col3.markdown('''#### 🖼️ semantics
+- 🔭 discovery
+- 🌌 projection
 ''')
 
 st.markdown('---')
 st.header('🌿 memetics / 🐣 birth rate')
-st.caption('This is the rate at which new ideas get saved to your conceptarium.')
+st.caption('The rate at which new ideas get saved to your conceptarium.')
 col1, col2, col3, col4 = st.columns(4)
 
 col1.metric(label='birth rate over past day', value='12', delta='+3')
@@ -99,7 +102,7 @@ col2.plotly_chart(fig)
 st.markdown('---')
 st.header('🌿 memetics / 🐇 population size')
 st.caption(
-    'This is a measure of how large the ecology of your mind is in terms of individual thoughts.')
+    'A measure of how large the ecology of your mind is in terms of individual thoughts.')
 
 col1, col2 = st.columns(2)
 
@@ -138,7 +141,7 @@ col2.plotly_chart(dict(data=data, layout=layout))
 
 st.markdown('---')
 st.header('🌿 memetics / 🐋 variability')
-st.caption('This is a measure of how diverse your thinking is at any given time, a measure of the biodiversity of your ideas.')
+st.caption('A measure of how diverse your thinking is at any given time, the biodiversity of your ideas.')
 col1, col2, col3, col4 = st.columns(4)
 
 col1.metric(label='variability over past week', value='6.3', delta='+1.2')
@@ -172,16 +175,15 @@ col2.plotly_chart(fig)
 st.markdown('---')
 st.header('🌿 memetics / 🍃 drift')
 st.caption(
-    'This is a measure of how much you\'re shifting your focus from one period to the next.')
+    'A measure of how much you\'re shifting your focus from one period to the next.')
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric(label='drift over past week', value='54', delta='+7')
-col2.metric(label='drift over past week (% of max)',
-            value='12%', delta='3%')
+col1.metric(label='drift over past week', value='6.3', delta='+1.2')
+col2.metric(label='drift over past week (% of max)', value='57.3%', delta='+5.2%')
 col3.metric(label='drift over past month',
-            value='230', delta='-2')
+            value='4.6', delta='-0.5')
 col4.metric(label='drift over past month (% of max)',
-            value='12', delta='3%')
+            value='83.6%', delta='-12.5%')
 
 
 col1, col2 = st.columns(2)
@@ -211,13 +213,13 @@ st.caption(
     'The fitness of a thought is equated with how active it is in your mind. Powerful, catchy, gripping ideas are the ones on which you reflect most.')
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric(label='mean fitness', value='54', delta='+7')
+col1.metric(label='mean fitness', value='11.9')
 col2.metric(label='median fitness',
-            value='12%', delta='3%')
-col3.metric(label='mean age of fittest quartile',
-            value='230', delta='-2')
+            value='8.3')
+col3.metric(label='mean age of fittest quartile (weeks)',
+            value='3.2')
 col4.metric(label='memetic load',
-            value='12', delta='3%')
+            value='0.73')
 
 
 col1, col2 = st.columns(2)
@@ -245,7 +247,7 @@ col2.plotly_chart(fig)
 st.markdown('---')
 st.header('📗 linguistics / ⏱️ conciseness')
 st.caption(
-    'Conciseness is based on the length of language thoughts.')
+    'The average length of language thoughts.')
 col1, col2 = st.columns(2)
 
 memetic_variability_per_week = np.random.uniform(5, 3, (20))
@@ -271,7 +273,7 @@ col2.plotly_chart(fig)
 st.markdown('---')
 st.header('📗 linguistics / 📰 readability')
 st.caption(
-    'Readability is based on the average word length and average sentence length.')
+    'A measure based on the average word length and average sentence length.')
 col1, col2 = st.columns(2)
 
 memetic_variability_per_week = np.random.uniform(5, 3, (20))
@@ -297,7 +299,7 @@ col2.plotly_chart(fig)
 st.markdown('---')
 st.header('📗 linguistics / 📏 objectivity')
 st.caption(
-    'Objectivity is a measure of how much your language thoughts appear to describe facts, rather than opinions.')
+    'A measure of how much your language thoughts appear to describe facts, rather than opinions.')
 col1, col2 = st.columns(2)
 
 memetic_variability_per_week = np.random.uniform(5, 3, (20))
@@ -323,7 +325,7 @@ col2.plotly_chart(fig)
 st.markdown('---')
 st.header('📗 linguistics / 💚 sentiment')
 st.caption(
-    'Sentiment is a measure of how positive your language thoughts are.')
+    'A measure of how positive your language thoughts are.')
 col1, col2 = st.columns(2)
 
 memetic_variability_per_week = np.random.uniform(5, 3, (20))
@@ -349,7 +351,7 @@ col2.plotly_chart(fig)
 st.markdown('---')
 st.header('📗 linguistics / 🎨 interests')
 st.caption(
-    'Those are keywords derived from your language thoughts.')
+    'Keywords derived from your language thoughts.')
 col1, col2 = st.columns(2)
 
 df = pd.DataFrame([
@@ -382,7 +384,7 @@ col2.plotly_chart(fig)
 
 st.markdown('---')
 st.header('🖼️ semantics / 🔭 discovery')
-st.caption('This is a measure of how much of the semantic space you\'ve explored through your ideas.')
+st.caption('A measure of how much of the semantic space you\'ve explored through your ideas.')
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -429,6 +431,7 @@ col1.plotly_chart(fig)
 
 st.markdown('---')
 st.header('🖼️ semantics / 🌌 projection')
+st.caption('Low-dimensional visualizations of the high-dimensional semantics of your thoughts.')
 col1, col2 = st.columns(2)
 
 embeddings = [np.append(e, 0.5) for e in np.random.rand(300, 3)]
@@ -450,3 +453,11 @@ fig.update_yaxes(title_text='')
 fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
 col2.plotly_chart(fig)
+
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
