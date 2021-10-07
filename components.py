@@ -6,15 +6,15 @@ import calendar
 import streamlit as st
 
 
-def sidebar():
+def sidebar_section():
     st.sidebar.header('settings')
-    option_url = st.sidebar.text_input(
+    st.session_state.conceptarium_url = st.sidebar.text_input(
         'What\'s the URL of your conceptarium?')
-    option_timezone = st.sidebar.number_input(
+    st.session_state.timezone = st.sidebar.number_input(
         'What timezone are you in? (UTC+...)', step=1)
 
 
-def header():
+def header_section():
     st.title('🔬 ideoscope')
     st.markdown(
         'An instrument for quantifying, understanding, and optimizing your thinking, split into three sections:')

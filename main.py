@@ -1,5 +1,6 @@
 import streamlit as st
 from components import *
+from data import *
 
 st.set_page_config(
     page_title='ideoscope',
@@ -10,24 +11,28 @@ st.set_page_config(
         'About': 'https://paulbricman.com/thoughtware/ideoscope'
     })
 
-# meta
-sidebar()
-header()
+sidebar_section()
 
-# memetics
-birth_rate_subsection()
-population_size_subsection()
-variability_subsection()
-drift_subsection()
-fitness_subsection()
+if st.session_state.conceptarium_url == '':
+    st.warning('Please introduce the URL of your conceptarium!')
+else:
+    fetch_conceptarium()
+    header_section()
 
-# linguistics
-conciseness_subsection()
-readability_subsection()
-objectivity_subsection()
-sentiment_subsection()
-interests_subsection()
+    # memetics
+    birth_rate_subsection()
+    population_size_subsection()
+    variability_subsection()
+    drift_subsection()
+    fitness_subsection()
 
-# semantics
-discovery_subsection()
-projection_subsection()
+    # linguistics
+    conciseness_subsection()
+    readability_subsection()
+    objectivity_subsection()
+    sentiment_subsection()
+    interests_subsection()
+
+    # semantics
+    discovery_subsection()
+    projection_subsection()
