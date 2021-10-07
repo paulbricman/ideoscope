@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import calendar
 import streamlit as st
 
+
 def sidebar():
     st.sidebar.header('settings')
     option_url = st.sidebar.text_input(
@@ -12,9 +13,11 @@ def sidebar():
     option_timezone = st.sidebar.number_input(
         'What timezone are you in? (UTC+...)', step=1)
 
+
 def header():
     st.title('🔬 ideoscope')
-    st.markdown('An instrument for quantifying, understanding, and optimizing your thinking, split into three sections:')
+    st.markdown(
+        'An instrument for quantifying, understanding, and optimizing your thinking, split into three sections:')
 
     col1, col2, col3 = st.columns(3)
     col1.markdown('''#### 🌿 memetics
@@ -44,6 +47,7 @@ def header():
                 """
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
+
 def birth_rate_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🐣 birth rate')
@@ -63,19 +67,24 @@ def birth_rate_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='days ago', autorange='reversed')
     fig.update_yaxes(title_text='birth rate')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    birth_rate_by_day_of_the_week = np.random.choice(calendar.day_abbr[0:7], 200)
+    birth_rate_by_day_of_the_week = np.random.choice(
+        calendar.day_abbr[0:7], 200)
     df = pd.DataFrame(birth_rate_by_day_of_the_week, columns=['Time'])
     fig = px.histogram(df, x='Time', nbins=12, color_discrete_sequence=[
         '#228b22'], labels={'count': '', 'Time': ''}, category_orders={'Time': calendar.day_abbr[0:7]}, title='birth rate by day of the week')
     fig.update_layout(bargap=0.2)
     fig.update_xaxes(title_text='day of the week')
     fig.update_yaxes(title_text='birth rate')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
     birth_rate_by_time_of_day = pd.DataFrame(
@@ -85,21 +94,26 @@ def birth_rate_subsection():
     fig.update_layout(bargap=0.2, showlegend=False)
     fig.update_xaxes(title_text='time of day')
     fig.update_yaxes(title_text='birth rate')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     birth_rate_by_month = np.random.choice(calendar.month_abbr[1:13], 200)
     df = pd.DataFrame([e for e in zip(birth_rate_by_day_of_the_week, np.random.normal(1600, 200, 200))],
-                    columns=['weekday', 'hour'])
+                      columns=['weekday', 'hour'])
     fig = px.density_heatmap(df, x='weekday', y='hour', category_orders={
         'weekday': calendar.day_abbr[0:7]}, color_continuous_scale=['#fffffd', '#228b22'], title='birth rate by day of the week and time of day')
     fig.update_layout(bargap=0.2, xaxis={'side': 'top'})
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='time of day', autorange='reversed')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
+
 
 def population_size_subsection():
     st.markdown('---')
@@ -117,36 +131,41 @@ def population_size_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='days ago', autorange='reversed')
     fig.update_yaxes(title_text='population size')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     layout = go.Layout(yaxis=go.layout.YAxis(title='age (weeks)', showline=True, linewidth=1, linecolor='#474539', mirror=True),
-                    xaxis=go.layout.XAxis(range=[-15, 15], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
-                    barmode='overlay',
-                    bargap=0.1,
-                    title='population pyramid of fittest quartile')
+                       xaxis=go.layout.XAxis(
+                           range=[-15, 15], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
+                       barmode='overlay',
+                       bargap=0.1,
+                       title='population pyramid of fittest quartile')
 
     data = [go.Bar(x=-(0.5+0.5*np.random.rand(10)) * list(range(10, 0, -1)),
-                y=list(range(0, 10)),
-                orientation='h',
-                name='language',
-                hoverinfo='x',
-                marker=dict(color='#42D142')
-                ),
+                   y=list(range(0, 10)),
+                   orientation='h',
+                   name='language',
+                   hoverinfo='x',
+                   marker=dict(color='#42D142')
+                   ),
             go.Bar(x=(0.5+0.5*np.random.rand(10)) * list(range(10, 0, -1)),
-                y=list(range(0, 10)),
-                orientation='h',
-                name='imagery',
-                marker=dict(color='seagreen')
-                )]
+                   y=list(range(0, 10)),
+                   orientation='h',
+                   name='imagery',
+                   marker=dict(color='seagreen')
+                   )]
 
     col2.plotly_chart(dict(data=data, layout=layout))
+
 
 def variability_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🐋 variability')
-    st.caption('A measure of how diverse your thinking is at any given time, the biodiversity of your ideas.')
+    st.caption(
+        'A measure of how diverse your thinking is at any given time, the biodiversity of your ideas.')
     col1, col2, col3, col4 = st.columns(4)
 
     col1.metric(label='variability over past week', value='6.3', delta='+1.2')
@@ -155,7 +174,6 @@ def variability_subsection():
     col3.metric(label='aggregate variability', value='5.8')
     col4.metric(label='variability of fittest quartile', value='2.3')
 
-
     col1, col2 = st.columns(2)
     memetic_variability_per_week = np.random.uniform(5, 3, (20))
     fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
@@ -163,8 +181,10 @@ def variability_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='variability')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     memetic_variability_per_month = np.random.uniform(5, 3, (5))
@@ -173,9 +193,12 @@ def variability_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='months ago', autorange='reversed')
     fig.update_yaxes(title_text='variability')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
+
 
 def drift_subsection():
     st.markdown('---')
@@ -185,12 +208,12 @@ def drift_subsection():
     col1, col2, col3, col4 = st.columns(4)
 
     col1.metric(label='drift over past week', value='6.3', delta='+1.2')
-    col2.metric(label='drift over past week (% of max)', value='57.3%', delta='+5.2%')
+    col2.metric(label='drift over past week (% of max)',
+                value='57.3%', delta='+5.2%')
     col3.metric(label='drift over past month',
                 value='4.6', delta='-0.5')
     col4.metric(label='drift over past month (% of max)',
                 value='83.6%', delta='-12.5%')
-
 
     col1, col2 = st.columns(2)
     memetic_variability_per_week = np.random.uniform(5, 3, (20))
@@ -199,8 +222,10 @@ def drift_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='drift')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     memetic_variability_per_month = np.random.uniform(5, 3, (5))
@@ -209,8 +234,10 @@ def drift_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='months ago', autorange='reversed')
     fig.update_yaxes(title_text='drift')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
@@ -229,7 +256,6 @@ def fitness_subsection():
     col4.metric(label='memetic load',
                 value='0.73')
 
-
     col1, col2 = st.columns(2)
     memetic_fitness = pd.DataFrame(
         np.random.normal(20, 10, 200))
@@ -238,8 +264,10 @@ def fitness_subsection():
     fig.update_layout(bargap=0.2, showlegend=False)
     fig.update_xaxes(title_text='fitness')
     fig.update_yaxes(title_text='thought count')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     memetic_fitness = np.abs(np.random.normal(0.1, 0.05, 20))
@@ -248,9 +276,12 @@ def fitness_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='fitness')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
+
 
 def conciseness_subsection():
     st.markdown('---')
@@ -265,8 +296,10 @@ def conciseness_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='conciseness')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
@@ -275,8 +308,10 @@ def conciseness_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='conciseness')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
@@ -293,8 +328,10 @@ def readability_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='readability')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
@@ -303,8 +340,10 @@ def readability_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='readability')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
@@ -321,8 +360,10 @@ def objectivity_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='objectivity')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
@@ -331,8 +372,10 @@ def objectivity_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='objectivity')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
@@ -349,8 +392,10 @@ def sentiment_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='sentiment')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
@@ -359,8 +404,10 @@ def sentiment_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='sentiment')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
@@ -379,31 +426,38 @@ def interests_subsection():
         dict(Task="lighting", Start='2021-04-01', Finish='2021-05-10'),
     ])
 
-    fig = px.timeline(df, x_start="Start", x_end="Finish", y="Task", color_discrete_sequence=['#228b22'], text='Task', title='timeline of interests')
+    fig = px.timeline(df, x_start="Start", x_end="Finish", y="Task", color_discrete_sequence=[
+                      '#228b22'], text='Task', title='timeline of interests')
     fig.update_yaxes(autorange="reversed")
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='', showticklabels=False)
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    birth_rate_by_day_of_the_week = np.random.choice(['solarpunk','Dune', 'conceptarium', 'conceptors', 'lighting'], 200)
+    birth_rate_by_day_of_the_week = np.random.choice(
+        ['solarpunk', 'Dune', 'conceptarium', 'conceptors', 'lighting'], 200)
     df = pd.DataFrame(birth_rate_by_day_of_the_week, columns=['Time'])
-    fig = px.histogram(df, x='Time', nbins=12, category_orders = {'Time': ['solarpunk','Dune', 'conceptarium', 'conceptors', 'lighting']}, color_discrete_sequence=[
+    fig = px.histogram(df, x='Time', nbins=12, category_orders={'Time': ['solarpunk', 'Dune', 'conceptarium', 'conceptors', 'lighting']}, color_discrete_sequence=[
         '#228b22'], title='thoughts by interest')
     fig.update_layout(bargap=0.2)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='count')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
 def discovery_subsection():
     st.markdown('---')
     st.header('🖼️ semantics / 🔭 discovery')
-    st.caption('A measure of how much of the semantic space you\'ve explored through your ideas.')
+    st.caption(
+        'A measure of how much of the semantic space you\'ve explored through your ideas.')
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -422,8 +476,10 @@ def discovery_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='weekly discovery rates')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
@@ -432,8 +488,10 @@ def discovery_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='weekly discovery rates')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
     weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
@@ -444,15 +502,18 @@ def discovery_subsection():
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='explored proportion of semantic volume')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
 
 def projection_subsection():
     st.markdown('---')
     st.header('🖼️ semantics / 🌌 projection')
-    st.caption('Low-dimensional visualizations of the high-dimensional semantics of your thoughts.')
+    st.caption(
+        'Low-dimensional visualizations of the high-dimensional semantics of your thoughts.')
     col1, col2 = st.columns(2)
 
     embeddings = [np.append(e, 0.5) for e in np.random.rand(300, 3)]
@@ -461,8 +522,10 @@ def projection_subsection():
     fig.update_layout(showlegend=False, margin=dict(l=0, r=0, b=0))
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
     embeddings = [np.append(e, 0.5) for e in np.random.rand(300, 3)]
@@ -471,6 +534,8 @@ def projection_subsection():
     fig.update_layout(showlegend=False, margin=dict(l=0, r=0, b=0))
     fig.update_xaxes(title_text='', autorange='reversed')
     fig.update_yaxes(title_text='')
-    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1,
+                     linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
