@@ -127,11 +127,11 @@ def population_size_subsection():
     data = population_pyramid_of_fittest_quartile()
     layout = go.Layout(yaxis=go.layout.YAxis(title='age (weeks)', showline=True, linewidth=1, linecolor='#474539', mirror=True),
                        xaxis=go.layout.XAxis(
-                           range=[-15, 15], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
+                           range=[-1.2 * np.max(data), 1.2 * np.max(data)], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
                        barmode='overlay',
                        bargap=0.1,
                        title='population pyramid of fittest quartile')
-    data = [go.Bar(x=data[0],
+    data = [go.Bar(x=np.multiply(-1, data[0]),
                    y=list(range(len(data[0]))),
                    orientation='h',
                    name='language',
@@ -142,6 +142,7 @@ def population_size_subsection():
                    y=list(range(len(data[1]))),
                    orientation='h',
                    name='imagery',
+                    hoverinfo='x',
                    marker=dict(color='seagreen')
                    )]
 
@@ -151,8 +152,7 @@ def population_size_subsection():
 def variability_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🐋 variability')
-    st.caption(
-        'A measure of how diverse your thinking is at any given time, the biodiversity of your ideas.')
+    st.caption('A measure of how diverse your thinking is at any given time, the biodiversity of your ideas.')
     col1, col2, col3, col4 = st.columns(4)
 
     value, delta = variability_over_past_week()
@@ -191,41 +191,39 @@ def variability_subsection():
 def drift_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🍃 drift')
-    st.caption(
-        'A measure of how much you\'re shifting your focus from one period to the next.')
+    st.caption('A measure of how much you\'re shifting your focus from one period to the next.')
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric(label='drift over past week', value='6.3', delta='+1.2')
-    col2.metric(label='drift over past week (% of max)',
-                value='57.3%', delta='+5.2%')
-    col3.metric(label='drift over past month',
-                value='4.6', delta='-0.5')
-    col4.metric(label='drift over past month (% of max)',
-                value='83.6%', delta='-12.5%')
+    value, delta = drift_over_past_week()
+    col1.metric(label='drift over past week', value=value, delta=delta)
+
+    value, delta = drift_over_past_week_percent_of_max()
+    col2.metric(label='drift over past week (% of max)', value=value, delta=delta)
+
+    value, delta = drift_over_past_month()
+    col3.metric(label='drift over past month', value=value, delta=delta)
+
+    value, delta = drift_over_past_month_percent_of_max()
+    col4.metric(label='drift over past month (% of max)', value=value, delta=delta)
 
     col1, col2 = st.columns(2)
-    memetic_variability_per_week = np.random.uniform(5, 3, (20))
-    fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-        '#228b22'], title='drift per week', line_shape='spline')
+
+    data = drift_per_week()
+    fig = px.line(data, color_discrete_sequence=['#228b22'], title='drift per week', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='drift')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    memetic_variability_per_month = np.random.uniform(5, 3, (5))
-    fig = px.line(memetic_variability_per_month, color_discrete_sequence=[
-        '#228b22'], title='drift per month', line_shape='spline')
+    data = drift_per_month()
+    fig = px.line(data, color_discrete_sequence=['#228b22'], title='drift per month', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='months ago', autorange='reversed')
     fig.update_yaxes(title_text='drift')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 

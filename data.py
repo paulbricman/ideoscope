@@ -6,6 +6,7 @@ from time import time as now
 from datetime import datetime, date, time
 from pytz import timezone
 import math
+from util import cos_dist
 
 
 def fetch_conceptarium():
@@ -16,7 +17,7 @@ def fetch_conceptarium():
     # conceptarium_url += 'find/lang/json?content=irrelevant&top_k=10&silent=True'
     # conceptarium_json = requests.get(conceptarium_url).json()
     # st.session_state.conceptarium_json = conceptarium_json
-    st.session_state.conceptarium_json = json.load(open('dummy.json'))
+    st.session_state.conceptarium_json = json.load(open('data/dummy.json'))
 
 
 def birth_rate_over_past_day():
@@ -142,7 +143,7 @@ def variability_per_week():
     for thought_idx, thought in enumerate(conceptarium):
         conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 7))
     
-    max_age = max([e['age'] for e in conceptarium])
+    max_age = max([e['age'] for e in conceptarium]) + 1
     variabilities = [0] * max_age
     
     for age in range(max_age):
@@ -164,7 +165,7 @@ def variability_per_month():
     for thought_idx, thought in enumerate(conceptarium):
         conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 30))
     
-    max_age = max([e['age'] for e in conceptarium])
+    max_age = max([e['age'] for e in conceptarium]) + 1
     variabilities = [0] * max_age
     
     for age in range(max_age):
@@ -180,8 +181,67 @@ def variability_per_month():
     return data
 
 
-def cos_dist(a, b):
-    dot_product = np.dot(a, b)
-    norm_a = np.linalg.norm(a)
-    norm_b = np.linalg.norm(b)
-    return 1 - dot_product / (norm_a * norm_b)
+def drift_over_past_week():
+    data = drift_per_week()
+    return round(data[0], 2), round(data[0] - data[1], 2)
+
+
+def drift_over_past_week_percent_of_max():
+    data = drift_per_week()
+    percent_of_max_past_week = round(data[0] / max(data), 2) * 100
+    percent_of_max_previous_week = round(data[1] / max(data), 2) * 100
+    return str(percent_of_max_past_week) + '%', str(round(percent_of_max_past_week - percent_of_max_previous_week, 2)) + '%'
+
+
+def drift_over_past_month():
+    data = drift_per_month()
+    if len(data) < 2:
+        return round(data[0], 2), None
+    return round(data[0], 2), round(data[0] - data[1], 2)
+
+
+def drift_over_past_month_percent_of_max():
+    data = drift_per_month()
+    percent_of_max_past_week = round(data[0] / max(data), 2) * 100
+
+    if len(data) < 2:
+        return percent_of_max_past_week, None
+        
+    percent_of_max_previous_week = round(data[1] / max(data), 2) * 100
+    return str(percent_of_max_past_week) + '%', str(percent_of_max_past_week - percent_of_max_previous_week) + '%'
+
+
+def drift_per_week():
+    conceptarium = st.session_state.conceptarium_json
+    
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 7))
+    
+    max_age = max([e['age'] for e in conceptarium]) + 1
+    centroids = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age]
+        embeddings = [e['embedding'] for e in thoughts]
+        centroids[age] = np.mean(embeddings, axis=0)
+
+    drifts = [cos_dist(centroids[e], centroids[e + 1]) * 100 for e in range(max_age - 1)]
+    return drifts
+
+
+def drift_per_month():
+    conceptarium = st.session_state.conceptarium_json
+    
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 30))
+    
+    max_age = max([e['age'] for e in conceptarium]) + 1
+    centroids = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age]
+        embeddings = [e['embedding'] for e in thoughts]
+        centroids[age] = np.mean(embeddings, axis=0)
+
+    drifts = [cos_dist(centroids[e], centroids[e + 1]) * 100 for e in range(max_age - 1)]
+    return drifts
