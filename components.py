@@ -155,35 +155,36 @@ def variability_subsection():
         'A measure of how diverse your thinking is at any given time, the biodiversity of your ideas.')
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric(label='variability over past week', value='6.3', delta='+1.2')
-    col2.metric(label='variability over past month',
-                value='4.6', delta='-0.5')
-    col3.metric(label='aggregate variability', value='5.8')
-    col4.metric(label='variability of fittest quartile', value='2.3')
+    value, delta = variability_over_past_week()
+    col1.metric(label='variability over past week', value=value, delta=delta)
+
+    value, delta = variability_over_past_month()
+    col2.metric(label='variability over past month', value=value, delta=delta)
+
+    value = aggregate_variability()
+    col3.metric(label='aggregate variability', value=value)
+
+    value = variability_of_fittest_quartile()
+    col4.metric(label='variability of fittest quartile', value=value)
 
     col1, col2 = st.columns(2)
-    memetic_variability_per_week = np.random.uniform(5, 3, (20))
-    fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-        '#228b22'], title='variability per week', line_shape='spline')
+
+    data = variability_per_week()
+    fig = px.line(data, x='age', y='variability', color_discrete_sequence=['#228b22'], title='variability per week', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='variability')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    memetic_variability_per_month = np.random.uniform(5, 3, (5))
-    fig = px.line(memetic_variability_per_month, color_discrete_sequence=[
-        '#228b22'], title='variability per month', line_shape='spline')
+    data = variability_per_month()
+    fig = px.line(data, x='age', y='variability', color_discrete_sequence=['#228b22'], title='variability per month', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='months ago', autorange='reversed')
     fig.update_yaxes(title_text='variability')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 

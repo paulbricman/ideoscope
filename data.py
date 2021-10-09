@@ -1,11 +1,9 @@
-import calendar
-from numpy import empty
+import numpy as np
 import streamlit as st
-import requests
 import json
 import pandas as pd
 from time import time as now
-from datetime import datetime, date, tzinfo, time
+from datetime import datetime, date, time
 from pytz import timezone
 import math
 
@@ -107,3 +105,83 @@ def population_pyramid_of_fittest_quartile():
         fittest_imagery_age = []
 
     return fittest_language_age, fittest_imagery_age
+
+
+def variability_over_past_week():
+    data = variability_per_week()['variability']
+    return round(data[0], 2), round(data[0] - data[1], 2)
+
+
+def variability_over_past_month():
+    data = variability_per_month()['variability']
+    if len(data) < 2:
+        return round(data[0], 2), None
+
+    return round(data[0], 2), round(data[0] - data[1], 2)
+
+
+def aggregate_variability():
+    conceptarium = st.session_state.conceptarium_json
+    embeddings = [e['embedding'] for e in conceptarium]
+    centroid = np.mean(embeddings, axis=0)
+    return round(np.mean([cos_dist(e, centroid) for e in embeddings]) * 100, 2)
+
+
+def variability_of_fittest_quartile():
+    conceptarium = st.session_state.conceptarium_json
+    conceptarium = sorted(conceptarium, key=lambda x: x['activation'])
+    fittest = conceptarium[:math.ceil(len(conceptarium) * 0.25)]
+    embeddings = [e['embedding'] for e in fittest]
+    centroid = np.mean(embeddings, axis=0)
+    return round(np.mean([cos_dist(e, centroid) for e in embeddings]) * 100, 2)
+
+
+def variability_per_week():
+    conceptarium = st.session_state.conceptarium_json
+    
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 7))
+    
+    max_age = max([e['age'] for e in conceptarium])
+    variabilities = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age]
+        if len(thoughts) > 1:
+            embeddings = [e['embedding'] for e in thoughts]
+            centroid = np.mean(embeddings, axis=0)
+            variabilities[age] = np.mean([cos_dist(e, centroid) for e in embeddings]) * 100
+
+    data = pd.DataFrame()
+    data['age'] = [e for e in range(max_age) if variabilities[e] != 0]
+    data['variability'] = [e for e in variabilities if e != 0]
+    return data
+
+
+def variability_per_month():
+    conceptarium = st.session_state.conceptarium_json
+    
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 30))
+    
+    max_age = max([e['age'] for e in conceptarium])
+    variabilities = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age]
+        if len(thoughts) > 1:
+            embeddings = [e['embedding'] for e in thoughts]
+            centroid = np.mean(embeddings, axis=0)
+            variabilities[age] = np.mean([cos_dist(e, centroid) for e in embeddings]) * 100
+
+    data = pd.DataFrame()
+    data['age'] = [e for e in range(max_age) if variabilities[e] != 0]
+    data['variability'] = [e for e in variabilities if e != 0]
+    return data
+
+
+def cos_dist(a, b):
+    dot_product = np.dot(a, b)
+    norm_a = np.linalg.norm(a)
+    norm_b = np.linalg.norm(b)
+    return 1 - dot_product / (norm_a * norm_b)
