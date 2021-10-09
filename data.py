@@ -206,7 +206,7 @@ def drift_over_past_month_percent_of_max():
 
     if len(data) < 2:
         return percent_of_max_past_week, None
-        
+
     percent_of_max_previous_week = round(data[1] / max(data), 2) * 100
     return str(percent_of_max_past_week) + '%', str(percent_of_max_past_week - percent_of_max_previous_week) + '%'
 
@@ -245,3 +245,35 @@ def drift_per_month():
 
     drifts = [cos_dist(centroids[e], centroids[e + 1]) * 100 for e in range(max_age - 1)]
     return drifts
+
+
+def mean_fitness():
+    data = fitness_distribution()
+    data = round(np.mean(data), 2)
+    return data
+
+
+def fitness_interquartile_mean():
+    data = fitness_distribution()
+    q1, q3 = np.percentile(data, [25, 75])
+    data = [e for e in data if q1 <= e and e <= q3]
+    data = np.mean(data)
+    return round(data, 2)
+
+
+def fitness_interquartile_range():
+    data = fitness_distribution()
+    q1, q3 = np.percentile(data, [25, 75])
+    return round(q3 - q1, 2)
+
+
+def memetic_load():
+    data = fitness_distribution()
+    data = round((np.max(data) - np.mean(data)) / np.max(data), 2)
+    return data
+
+
+def fitness_distribution():
+    conceptarium = st.session_state.conceptarium_json
+    data = [e['activation'] for e in conceptarium]
+    return data

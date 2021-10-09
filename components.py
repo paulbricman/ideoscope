@@ -230,42 +230,39 @@ def drift_subsection():
 def fitness_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🦅 fitness')
-    st.caption(
-        'The fitness of a thought is equated with how active it is in your mind. Powerful, catchy, gripping ideas are the ones on which you reflect most.')
+    st.caption('The fitness of a thought is equated with how active it is in your mind. Powerful, catchy, gripping ideas are the ones on which you reflect most.')
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric(label='mean fitness', value='11.9')
-    col2.metric(label='median fitness',
-                value='8.3')
-    col3.metric(label='mean age of fittest quartile (weeks)',
-                value='3.2')
-    col4.metric(label='memetic load',
-                value='0.73')
+    value = mean_fitness()
+    col1.metric(label='mean fitness', value=value)
+
+    value = fitness_interquartile_mean()
+    col2.metric(label='fitness interquartile mean', value=value)
+
+    value = fitness_interquartile_range()
+    col3.metric(label='fitness interquartile range', value=value)
+
+    value = memetic_load()          
+    col4.metric(label='memetic load', value=value)
 
     col1, col2 = st.columns(2)
-    memetic_fitness = pd.DataFrame(
-        np.random.normal(20, 10, 200))
-    fig = px.histogram(memetic_fitness, nbins=50, color_discrete_sequence=[
-        '#228b22'], labels={'count': '', 'Time': ''}, title='fitness distribution')
+
+    data = fitness_distribution()
+    fig = px.histogram(data, nbins=50, color_discrete_sequence=['#228b22'], title='fitness distribution')
     fig.update_layout(bargap=0.2, showlegend=False)
     fig.update_xaxes(title_text='fitness')
     fig.update_yaxes(title_text='thought count')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    memetic_fitness = np.abs(np.random.normal(0.1, 0.05, 20))
-    fig = px.box(memetic_fitness, color_discrete_sequence=[
-        '#228b22'], title='fitness distribution')
+    data = fitness_distribution()
+    fig = px.box(data, color_discrete_sequence=['#228b22'], title='fitness distribution')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='fitness')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
