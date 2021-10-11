@@ -269,128 +269,100 @@ def fitness_subsection():
 def conciseness_subsection():
     st.markdown('---')
     st.header('📗 linguistics / ⏱️ conciseness')
-    st.caption(
-        'The average length of language thoughts.')
+    st.caption('The average reading time of language thoughts in seconds based on average reading speed (lower is more concise).')
     col1, col2 = st.columns(2)
 
-    memetic_variability_per_week = np.random.uniform(5, 3, (20))
-    fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-        '#228b22'], title='conciseness per week', line_shape='spline')
+    data = conciseness_per_week()
+    fig = px.line(data, color_discrete_sequence=['#228b22'], title='conciseness per week', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
-    fig.update_yaxes(title_text='conciseness')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(title_text='average reading time (seconds)')
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
-    fig = px.box(weekly_discovery_rates, color_discrete_sequence=[
-        '#228b22'], title='conciseness distribution over past month')
+    data = conciseness_distribution_over_past_month()
+    fig = px.box(data, color_discrete_sequence=['#228b22'], title='conciseness distribution over past month')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
-    fig.update_yaxes(title_text='conciseness')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(title_text='reading time (seconds)')
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
 def readability_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 📰 readability')
-    st.caption(
-        'A measure based on the average word length and average sentence length.')
+    st.caption('The Flesch-Kincaid grade level is an estimate for how many years of formal education one needs to understand a text.')
     col1, col2 = st.columns(2)
 
-    memetic_variability_per_week = np.random.uniform(5, 3, (20))
-    fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-        '#228b22'], title='readability per week', line_shape='spline')
+    data = readability_per_week()
+    fig = px.line(data, color_discrete_sequence=['#228b22'], title='readability per week', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
-    fig.update_yaxes(title_text='readability')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(title_text='Flesch-Kincaid grade level')
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
-    fig = px.box(weekly_discovery_rates, color_discrete_sequence=[
-        '#228b22'], title='readability distribution over past month')
+    data = readability_distribution_over_past_month()
+    fig = px.box(data, color_discrete_sequence=['#228b22'], title='readability distribution over past month')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
-    fig.update_yaxes(title_text='readability')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_yaxes(title_text='Flesch-Kincaid grade level')
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
 def objectivity_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 📏 objectivity')
-    st.caption(
-        'A measure of how much your language thoughts appear to describe facts, rather than opinions.')
+    st.caption('A measure of how much your language thoughts appear to describe facts, rather than opinions.')
     col1, col2 = st.columns(2)
 
-    memetic_variability_per_week = np.random.uniform(5, 3, (20))
-    fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-        '#228b22'], title='objectivity per week', line_shape='spline')
+    data = objectivity_per_week()
+    fig = px.line(data, color_discrete_sequence=['#228b22'], title='objectivity per week', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='objectivity')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
-    fig = px.box(weekly_discovery_rates, color_discrete_sequence=[
-        '#228b22'], title='objectivity distribution over past month')
+    data = objectivity_distribution_over_past_month()
+    fig = px.box(data, color_discrete_sequence=['#228b22'], title='objectivity distribution over past month')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='objectivity')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 
 def sentiment_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 💚 sentiment')
-    st.caption(
-        'A measure of how positive your language thoughts are.')
+    st.caption('A measure of how positive your language thoughts are.')
     col1, col2 = st.columns(2)
 
-    memetic_variability_per_week = np.random.uniform(5, 3, (20))
-    fig = px.line(memetic_variability_per_week, color_discrete_sequence=[
-        '#228b22'], title='sentiment per week', line_shape='spline')
+    data = sentiment_per_week()
+    fig = px.line(data, color_discrete_sequence=['#228b22'], title='sentiment per week', line_shape='spline')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='weeks ago', autorange='reversed')
     fig.update_yaxes(title_text='sentiment')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
-    fig = px.box(weekly_discovery_rates, color_discrete_sequence=[
-        '#228b22'], title='sentiment distribution over past month')
+    data = sentiment_distribution_over_past_month()
+    fig = px.box(data, color_discrete_sequence=['#228b22'], title='sentiment distribution over past month')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='sentiment')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 

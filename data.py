@@ -6,7 +6,9 @@ from time import time as now
 from datetime import datetime, date, time
 from pytz import timezone
 import math
-from util import cos_dist
+from util import cos_dist, sentence_count, syllable_count
+import re
+from textblob import TextBlob
 
 
 def fetch_conceptarium():
@@ -276,4 +278,115 @@ def memetic_load():
 def fitness_distribution():
     conceptarium = st.session_state.conceptarium_json
     data = [e['activation'] for e in conceptarium]
+    return data
+
+
+def conciseness_per_week():
+    conceptarium = st.session_state.conceptarium_json
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 7))
+    
+    max_age = max([e['age'] for e in conceptarium]) + 1
+    data = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age]
+        lengths = [len(e['content'].split(' ')) / 130 * 60 for e in thoughts if e['modality'] == 'language']
+        data[age] = np.mean(lengths)
+
+    return data
+
+
+def conciseness_distribution_over_past_month():
+    conceptarium = st.session_state.conceptarium_json
+    thoughts = [e for e in conceptarium if int((now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1]
+    data = [len(e['content'].split(' ')) / 130 * 60 for e in thoughts if e['modality'] == 'language']
+    return data
+
+
+def readability_per_week():
+    conceptarium = st.session_state.conceptarium_json
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 7))
+    
+    max_age = max([e['age'] for e in conceptarium]) + 1
+    data = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age and e['modality'] == 'language']
+        text = ' '.join([e['content'] for e in thoughts])
+        asl = len(text.split(' ')) / sentence_count(text)
+        asw = np.mean([syllable_count(e) for e in text.split(' ') if len(re.split(r'[.!?]+', e)) == 1 and len(e) > 0])
+        data[age] = 0.39 * asl + 11.8 * asw - 15.59
+
+    return data
+
+
+def readability_distribution_over_past_month():
+    conceptarium = st.session_state.conceptarium_json
+    thoughts = [e for e in conceptarium if int((now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'language']
+    data = [0] * len(thoughts)
+    
+    for thought_idx, thought in enumerate(thoughts):
+        text = thought['content']
+        asl = len(text.split(' ')) / sentence_count(text)
+        asw = np.mean([syllable_count(e) for e in text.split(' ') if len(re.split(r'[.!?]+', e)) == 1 and len(e) > 0])
+        data[thought_idx] = 0.39 * asl + 11.8 * asw - 15.59
+
+    return data
+
+
+def objectivity_per_week():
+    conceptarium = st.session_state.conceptarium_json
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 7))
+    
+    max_age = max([e['age'] for e in conceptarium]) + 1
+    data = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age and e['modality'] == 'language']
+        text = TextBlob(' '.join([e['content'] for e in thoughts]))
+        data[age] = 1 - text.sentiment[1]
+
+    return data
+
+
+def objectivity_distribution_over_past_month():
+    conceptarium = st.session_state.conceptarium_json
+    thoughts = [e for e in conceptarium if int((now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'language']
+    data = [0] * len(thoughts)
+    
+    for thought_idx, thought in enumerate(thoughts):
+        text = TextBlob(thought['content'])
+        data[thought_idx] = 1 - text.sentiment[1]
+
+    return data
+
+
+def sentiment_per_week():
+    conceptarium = st.session_state.conceptarium_json
+    for thought_idx, thought in enumerate(conceptarium):
+        conceptarium[thought_idx]['age'] = int((now() - thought['timestamp']) / (60 * 60 * 24 * 7))
+    
+    max_age = max([e['age'] for e in conceptarium]) + 1
+    data = [0] * max_age
+    
+    for age in range(max_age):
+        thoughts = [e for e in conceptarium if e['age'] == age and e['modality'] == 'language']
+        text = TextBlob(' '.join([e['content'] for e in thoughts]))
+        data[age] = text.sentiment[0]
+
+    return data
+
+
+def sentiment_distribution_over_past_month():
+    conceptarium = st.session_state.conceptarium_json
+    thoughts = [e for e in conceptarium if int((now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'language']
+    data = [0] * len(thoughts)
+    
+    for thought_idx, thought in enumerate(thoughts):
+        text = TextBlob(thought['content'])
+        data[thought_idx] = text.sentiment[0]
+
     return data
