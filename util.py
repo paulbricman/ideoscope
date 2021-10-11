@@ -23,10 +23,3 @@ def syllable_count(word):
     if count == 0:
         count += 1
     return count
-
-
-def sentence_count(paragraph):
-    data = re.split(r'[.!?]+', paragraph)
-    if len(data) == 1:
-        return 1
-    return len(data) - 1

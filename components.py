@@ -42,12 +42,12 @@ def header_section():
     - 🌌 projection
     ''')
 
-    hide_streamlit_style = """
+    hide_streamlit_style = '''
                 <style>
                 #MainMenu {visibility: hidden;}
                 footer {visibility: hidden;}
                 </style>
-                """
+                '''
     st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
@@ -369,42 +369,26 @@ def sentiment_subsection():
 def interests_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 🎨 interests')
-    st.caption(
-        'Keywords derived from your language thoughts.')
+    st.caption('Keywords derived from your language thoughts.')
     col1, col2 = st.columns(2)
-
-    df = pd.DataFrame([
-        dict(Task="solarpunk", Start='2021-01-01', Finish='2021-02-28'),
-        dict(Task="Dune", Start='2021-02-05', Finish='2021-04-15'),
-        dict(Task="conceptarium", Start='2021-02-20', Finish='2021-05-30'),
-        dict(Task="conceptors", Start='2021-03-01', Finish='2021-04-02'),
-        dict(Task="lighting", Start='2021-04-01', Finish='2021-05-10'),
-    ])
-
-    fig = px.timeline(df, x_start="Start", x_end="Finish", y="Task", color_discrete_sequence=[
-                      '#228b22'], text='Task', title='timeline of interests')
-    fig.update_yaxes(autorange="reversed")
+    
+    data = interests()
+    print(pd.DataFrame().append(data))
+    fig = px.timeline(data, x_start='start', x_end='end', y='keyword', color_discrete_sequence=['#228b22'], text='keyword', title='timeline of interests')
+    fig.update_yaxes(autorange='reversed')
     fig.update_layout(showlegend=False)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='', showticklabels=False)
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    birth_rate_by_day_of_the_week = np.random.choice(
-        ['solarpunk', 'Dune', 'conceptarium', 'conceptors', 'lighting'], 200)
-    df = pd.DataFrame(birth_rate_by_day_of_the_week, columns=['Time'])
-    fig = px.histogram(df, x='Time', nbins=12, category_orders={'Time': ['solarpunk', 'Dune', 'conceptarium', 'conceptors', 'lighting']}, color_discrete_sequence=[
-        '#228b22'], title='thoughts by interest')
+    fig = px.bar(data, x='keyword', y='count', color_discrete_sequence=['#228b22'], title='thoughts by interest')
     fig.update_layout(bargap=0.2)
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='count')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1,linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
 

@@ -1,3 +1,4 @@
+from typing import Text
 import numpy as np
 import streamlit as st
 import json
@@ -6,9 +7,10 @@ from time import time as now
 from datetime import datetime, date, time
 from pytz import timezone
 import math
-from util import cos_dist, sentence_count, syllable_count
+from util import cos_dist, syllable_count
 import re
 from textblob import TextBlob
+from collections import Counter
 
 
 def fetch_conceptarium():
@@ -315,7 +317,8 @@ def readability_per_week():
     for age in range(max_age):
         thoughts = [e for e in conceptarium if e['age'] == age and e['modality'] == 'language']
         text = ' '.join([e['content'] for e in thoughts])
-        asl = len(text.split(' ')) / sentence_count(text)
+        blob = TextBlob(text)
+        asl = len(blob.words) / len(text)
         asw = np.mean([syllable_count(e) for e in text.split(' ') if len(re.split(r'[.!?]+', e)) == 1 and len(e) > 0])
         data[age] = 0.39 * asl + 11.8 * asw - 15.59
 
@@ -329,7 +332,8 @@ def readability_distribution_over_past_month():
     
     for thought_idx, thought in enumerate(thoughts):
         text = thought['content']
-        asl = len(text.split(' ')) / sentence_count(text)
+        blob = TextBlob(text)
+        asl = len(blob.words) / len(blob.sentences)
         asw = np.mean([syllable_count(e) for e in text.split(' ') if len(re.split(r'[.!?]+', e)) == 1 and len(e) > 0])
         data[thought_idx] = 0.39 * asl + 11.8 * asw - 15.59
 
@@ -389,4 +393,31 @@ def sentiment_distribution_over_past_month():
         text = TextBlob(thought['content'])
         data[thought_idx] = text.sentiment[0]
 
+    return data
+
+
+def interests():
+    conceptarium = st.session_state.conceptarium_json
+    language_thoughts = [e for e in conceptarium if e['modality'] == 'language']
+    language_thoughts = sorted(language_thoughts, key=lambda x: x['timestamp'])
+    text = ' '.join([e['content'] for e in language_thoughts])
+    text = TextBlob(text.lower())
+    keywords = text.noun_phrases
+    keywords = [e.singularize() for e in keywords]
+    keywords = Counter(keywords)
+    keywords = [e for e in keywords.keys() if keywords[e] > 2]
+    data = pd.DataFrame(columns=['keyword', 'start', 'end', 'count'])
+    
+    for keyword in keywords:
+        instances = [e for e in language_thoughts if keyword in e['content']]
+        if keyword == 'kernel function':
+            print([(e['timestamp'], e['content']) for e in instances])
+        if len(instances) > 0:
+            start = datetime.fromtimestamp(instances[0]['timestamp']).strftime('%Y-%m-%d')
+            end = datetime.fromtimestamp(instances[-1]['timestamp']).strftime('%Y-%m-%d')
+            if start == end:
+                end = datetime.fromtimestamp(instances[-1]['timestamp'] + (60 * 60 * 24)).strftime('%Y-%m-%d')
+            data.loc[len(data.index)] = [keyword, start, end, len(instances)]
+
+    data = data.sort_values(by='start')
     return data
