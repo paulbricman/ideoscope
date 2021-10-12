@@ -412,8 +412,6 @@ def interests():
     
     for keyword in keywords:
         instances = [e for e in language_thoughts if keyword in e['content']]
-        if keyword == 'kernel function':
-            print([(e['timestamp'], e['content']) for e in instances])
         if len(instances) > 0:
             start = datetime.fromtimestamp(instances[0]['timestamp']).strftime('%Y-%m-%d')
             end = datetime.fromtimestamp(instances[-1]['timestamp']).strftime('%Y-%m-%d')

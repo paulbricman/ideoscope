@@ -31,8 +31,8 @@ else:
     readability_subsection()
     objectivity_subsection()
     sentiment_subsection()
-    #interests_subsection()
+    interests_subsection()
 
     # semantics
-    #projection_subsection()
+    projection_subsection()
     discovery_subsection()
