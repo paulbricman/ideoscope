@@ -7,10 +7,12 @@ from time import time as now
 from datetime import datetime, date, time
 from pytz import timezone
 import math
-from util import cos_dist, syllable_count
+from util import cos_dist, sample_spherical, syllable_count
 import re
 from textblob import TextBlob
 from collections import Counter
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 
 
 def fetch_conceptarium():
@@ -318,7 +320,7 @@ def readability_per_week():
         thoughts = [e for e in conceptarium if e['age'] == age and e['modality'] == 'language']
         text = ' '.join([e['content'] for e in thoughts])
         blob = TextBlob(text)
-        asl = len(blob.words) / len(text)
+        asl = len(blob.words) / len(blob.sentences)
         asw = np.mean([syllable_count(e) for e in text.split(' ') if len(re.split(r'[.!?]+', e)) == 1 and len(e) > 0])
         data[age] = 0.39 * asl + 11.8 * asw - 15.59
 
@@ -421,3 +423,70 @@ def interests():
 
     data = data.sort_values(by='start')
     return data
+
+
+def projection_2d():
+    conceptarium = st.session_state.conceptarium_json
+    thoughts = [e for e in conceptarium if e['modality'] == 'language']
+    embeddings = [e['embedding'] for e in thoughts]
+    reducer = TSNE(2)
+    embeddings_2d = reducer.fit_transform(embeddings)
+    data = [[*emb, thoughts[emb_idx]['modality']] for emb_idx, emb in enumerate(embeddings_2d)]
+    data = [e + ['*image*'] if e[2] == 'imagery' else e + [thoughts[e_idx]['content']] for e_idx, e in enumerate(data)]
+    data = pd.DataFrame(data, columns=['x', 'y', 'modality', 'content'])
+    data.content = data.content.str.wrap(40)
+    data.content = data.content.apply(lambda x: x.replace('\n', '<br>'))
+    return data
+
+
+def projection_3d():
+    conceptarium = st.session_state.conceptarium_json
+    thoughts = [e for e in conceptarium if e['modality'] == 'language']
+    embeddings = [e['embedding'] for e in thoughts]
+    reducer = TSNE(3)
+    embeddings_3d = reducer.fit_transform(embeddings)
+    data = [[*emb, thoughts[emb_idx]['modality']] for emb_idx, emb in enumerate(embeddings_3d)]
+    data = [e + ['*imagery*'] if conceptarium[e_idx]['modality'] == 'imagery' else e + [thoughts[e_idx]['content']] for e_idx, e in enumerate(data)]
+    data = [e + [3] for e in data]
+    data = pd.DataFrame(data, columns=['x', 'y', 'z', 'modality', 'content', 'size'])
+    data.content = data.content.str.wrap(40)
+    data.content = data.content.apply(lambda x: x.replace('\n', '<br>'))
+    return data
+
+
+def energy_spectrum():
+    conceptarium = st.session_state.conceptarium_json
+    embeddings = [e['embedding'] for e in conceptarium]
+    reducer = PCA(20)
+    embeddings = reducer.fit_transform(embeddings)
+    data = reducer.explained_variance_ratio_
+    return data
+
+
+def explored_portion_of_semantic_space():
+    n_probes = 500000
+    hits = 0
+
+    conceptarium = st.session_state.conceptarium_json
+    probes = sample_spherical(n_probes, 512)
+    embeddings = np.array([e['embedding'] for e in conceptarium])
+    similarities = np.dot(probes, embeddings.T)
+    max_similarities = np.max(similarities, axis=1)
+    hits = np.count_nonzero(max_similarities > 0.19)
+
+    hitrate = hits / n_probes
+    data = pd.DataFrame([['explored', hitrate], ['unexplored', 1 - hitrate]], columns=['name', 'value'])
+    return data
+
+
+def discovery_per_thought(explored_portion):
+    conceptarium = st.session_state.conceptarium_json
+    data = explored_portion / len(conceptarium)
+    return data
+
+
+def conceptarium_age():
+    conceptarium = st.session_state.conceptarium_json
+    conceptarium = sorted(conceptarium, key= lambda x: x['timestamp'])
+    age = (now() - conceptarium[0]['timestamp']) / (60 * 60 * 24 * 365)
+    return age

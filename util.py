@@ -23,3 +23,23 @@ def syllable_count(word):
     if count == 0:
         count += 1
     return count
+
+
+def sample_spherical(npoints, ndim=3):
+    vec = np.random.randn(ndim, npoints)
+    vec /= np.linalg.norm(vec, axis=0)
+    vec = np.transpose(vec)
+    return vec
+
+
+'''
+from sentence_transformers import SentenceTransformer, util
+model=SentenceTransformer('clip-ViT-B-32')
+
+def similarity(x, y):
+    emb_x=model.encode(x, convert_to_tensor=True)
+    emb_y=model.encode(y, convert_to_tensor=True)
+    return util.cos_sim(emb_x, emb_y)
+
+
+'''

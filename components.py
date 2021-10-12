@@ -38,8 +38,8 @@ def header_section():
     - 🎨 interests
     ''')
     col3.markdown('''#### 🖼️ semantics
-    - 🔭 discovery
     - 🌌 projection
+    - 🔭 discovery
     ''')
 
     hide_streamlit_style = '''
@@ -392,89 +392,64 @@ def interests_subsection():
     col2.plotly_chart(fig)
 
 
-def discovery_subsection():
-    st.markdown('---')
-    st.header('🖼️ semantics / 🔭 discovery')
-    st.caption(
-        'A measure of how much of the semantic space you\'ve explored through your ideas.')
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    col1.metric(label='dicovery over past week', value='0.21%', delta='+0.02%')
-    col2.metric(label='dicovery over past month',
-                value='0.87%', delta='-0.09%')
-    col3.metric(label='explored proportion of semantic volume',
-                value='12.52%')
-    col4.metric(label='ETA complete semantic coverage',
-                value='67.3 YRS')
-
-    col1, col2 = st.columns(2)
-
-    fig = px.pie(pd.DataFrame([['unexplored', 87.5], ['explored', 12.5]], columns=['name', 'value']), names='name', values='value', color_discrete_sequence=[
-        '#228b22'], title='explored portion of semantic space')
-    fig.update_layout(showlegend=False)
-    fig.update_xaxes(title_text='')
-    fig.update_yaxes(title_text='weekly discovery rates')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    col1.plotly_chart(fig)
-
-    weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
-    fig = px.box(weekly_discovery_rates, color_discrete_sequence=[
-        '#228b22'], title='weekly discovery rate distribution')
-    fig.update_layout(showlegend=False)
-    fig.update_xaxes(title_text='')
-    fig.update_yaxes(title_text='weekly discovery rates')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    col2.plotly_chart(fig)
-
-    weekly_discovery_rates = np.abs(np.random.normal(0.1, 0.05, 20))
-    weekly_discovery_rates = [
-        sum(weekly_discovery_rates[e:]) for e in range(len(weekly_discovery_rates))]
-    fig = px.line(weekly_discovery_rates, color_discrete_sequence=[
-        '#228b22'], title='cumulative discovery rate', line_shape='spline')
-    fig.update_layout(showlegend=False)
-    fig.update_xaxes(title_text='weeks ago', autorange='reversed')
-    fig.update_yaxes(title_text='explored proportion of semantic volume')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    col1.plotly_chart(fig)
-
-
 def projection_subsection():
     st.markdown('---')
     st.header('🖼️ semantics / 🌌 projection')
-    st.caption(
-        'Low-dimensional visualizations of the high-dimensional semantics of your thoughts.')
+    st.caption('Low-dimensional visualizations of the high-dimensional semantics of your thoughts.')
     col1, col2 = st.columns(2)
 
-    embeddings = [np.append(e, 0.5) for e in np.random.rand(300, 3)]
-    fig = px.scatter(pd.DataFrame(embeddings, columns=['x', 'y', 'z', 'size']), x='x', y='y', size='size', size_max=5, color_discrete_sequence=[
-        '#228b22'], title='2D projection')
+    data = projection_2d()
+    fig = px.scatter(data, x='x', y='y', hover_data=['modality', 'content'], color_discrete_sequence=['#228b22'], title='2D projection')
     fig.update_layout(showlegend=False, margin=dict(l=0, r=0, b=0))
     fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    embeddings = [np.append(e, 0.5) for e in np.random.rand(300, 3)]
-    fig = px.scatter_3d(pd.DataFrame(embeddings, columns=['x', 'y', 'z', 'size']), x='x', y='y', z='z', size='size', size_max=5, color_discrete_sequence=[
-        '#228b22'], title='3D projection')
+    data = projection_3d()
+    fig = px.scatter_3d(data, x='x', y='y', z='z', hover_data=['modality', 'content'], size='size', size_max=5, color_discrete_sequence=['#228b22'], title='3D projection')
     fig.update_layout(showlegend=False, margin=dict(l=0, r=0, b=0))
-    fig.update_xaxes(title_text='', autorange='reversed')
+    fig.update_xaxes(title_text='')
     fig.update_yaxes(title_text='')
-    fig.update_xaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
-    fig.update_yaxes(showline=True, linewidth=1,
-                     linecolor='#474539', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    col2.plotly_chart(fig)
+
+
+def discovery_subsection():
+    st.markdown('---')
+    st.header('🖼️ semantics / 🔭 discovery')
+    st.caption('A measure of how much of the semantic space you\'ve explored through your ideas.')
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    data = [explored_portion_of_semantic_space()]
+    data += [discovery_per_thought(data[0]['value'][0])]
+    data += [(1 - data[0]['value'][0]) / data[1]]
+    data += [(1 - data[0]['value'][0]) / data[0]['value'][0] * conceptarium_age()]
+
+    col1.metric(label='explored proportion of semantic volume', value='{:.3f}'.format(data[0]['value'][0] * 100) + '%')
+    col2.metric(label='mean dicovery rate per thought', value='{:.5f}'.format(data[1] * 100) + '%')
+    col3.metric(label='estimated thoughts left for full coverage', value=int(data[2]))
+    col4.metric(label='ETA full coverage', value=f'{data[3]:.2f}' + ' YRS')
+
+    col1, col2 = st.columns(2)
+
+    fig = px.pie(data[0], names='name', values='value', color_discrete_sequence=['#228b22'], title='explored portion of semantic space')
+    fig.update_layout(showlegend=False)
+    fig.update_xaxes(title_text='')
+    fig.update_yaxes(title_text='weekly discovery rates')
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    col1.plotly_chart(fig)
+
+
+    data = energy_spectrum()
+    fig = px.bar(data, color_discrete_sequence=['#228b22'], title='PCA energy spectrum')
+    fig.update_layout(showlegend=False)
+    fig.update_xaxes(title_text='principal component')
+    fig.update_yaxes(title_text='explained variance ratio')
+    fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
