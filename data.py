@@ -21,7 +21,6 @@ def fetch_conceptarium():
     conceptarium_url += 'find/lang/json?content=irrelevant&top_k=100000&silent=True'
     conceptarium_json = requests.get(conceptarium_url).json()
     st.session_state.conceptarium_json = conceptarium_json
-    #st.session_state.conceptarium_json = json.load(open('data/dummy.json'))
 
 
 def birth_rate_over_past_day():
