@@ -6,20 +6,14 @@ import calendar
 import streamlit as st
 from data import *
 
+
 def sidebar_section():
     st.sidebar.header('settings')
-    st.session_state.conceptarium_url = st.sidebar.text_input(
-        'What\'s the URL of your conceptarium?')
-    
-    timezone = st.sidebar.number_input(
-        'What timezone are you in? (UTC+...)', step=1)
-    if timezone >= 0:
-        st.session_state.timezone = 'Etc/GMT-' + str(int(abs(timezone)))
-    else:
-        st.session_state.timezone = 'Etc/GMT+' + str(int(abs(timezone)))
+    st.session_state.conceptarium_url = st.sidebar.text_input('What\'s the URL of your conceptarium?')
+        
 
 def header_section():
-    st.title('🔬 ideoscope')
+    st.title('🔬 ideoscope.')
     st.markdown('An instrument for quantifying, understanding, and optimizing your thinking, split into three sections:')
 
     col1, col2, col3 = st.columns(3)
@@ -55,6 +49,7 @@ def birth_rate_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🐣 birth rate')
     st.caption('The rate at which new ideas get saved to your conceptarium.')
+    
     col1, col2, col3, col4 = st.columns(4)
 
     value, delta = birth_rate_over_past_day()
@@ -80,7 +75,6 @@ def birth_rate_subsection():
     fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col1.plotly_chart(fig)
 
-    
     data = birth_rate_by_day_of_week()
     fig = px.histogram(data, x='weekday', nbins=12, color_discrete_sequence=['#228b22'], category_orders={'weekday': calendar.day_abbr[0:7]}, title='birth rate by day of the week')
     fig.update_layout(bargap=0.2)
@@ -108,6 +102,7 @@ def birth_rate_subsection():
     fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
 
+
 def population_size_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🐇 population size')
@@ -126,8 +121,7 @@ def population_size_subsection():
 
     data = population_pyramid_of_fittest_quartile()
     layout = go.Layout(yaxis=go.layout.YAxis(title='age (weeks)', showline=True, linewidth=1, linecolor='#474539', mirror=True),
-                       xaxis=go.layout.XAxis(
-                           range=[-1.2 * np.max(data), 1.2 * np.max(data)], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
+                       xaxis=go.layout.XAxis(range=[-1.2 * np.amax(data[0] + data[1]), 1.2 * np.amax(data[0] + data[1])], title='count', showline=True, linewidth=1, linecolor='#474539', mirror=True),
                        barmode='overlay',
                        bargap=0.1,
                        title='population pyramid of fittest quartile')
@@ -136,15 +130,13 @@ def population_size_subsection():
                    orientation='h',
                    name='language',
                    hoverinfo='x',
-                   marker=dict(color='#42D142')
-                   ),
+                   marker=dict(color='#42D142')),
             go.Bar(x=data[1],
                    y=list(range(len(data[1]))),
                    orientation='h',
                    name='imagery',
                     hoverinfo='x',
-                   marker=dict(color='seagreen')
-                   )]
+                   marker=dict(color='seagreen'))]
 
     col2.plotly_chart(dict(data=data, layout=layout))
 
@@ -153,6 +145,7 @@ def variability_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🐋 variability')
     st.caption('A measure of how diverse your thinking is at any given time, the biodiversity of your ideas.')
+    
     col1, col2, col3, col4 = st.columns(4)
 
     value, delta = variability_over_past_week()
@@ -192,6 +185,7 @@ def drift_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🍃 drift')
     st.caption('A measure of how much you\'re shifting your focus from one period to the next.')
+    
     col1, col2, col3, col4 = st.columns(4)
 
     value, delta = drift_over_past_week()
@@ -231,6 +225,7 @@ def fitness_subsection():
     st.markdown('---')
     st.header('🌿 memetics / 🦅 fitness')
     st.caption('The fitness of a thought is equated with how active it is in your mind. Powerful, catchy, gripping ideas are the ones on which you reflect most.')
+    
     col1, col2, col3, col4 = st.columns(4)
 
     value = mean_fitness()
@@ -270,6 +265,7 @@ def conciseness_subsection():
     st.markdown('---')
     st.header('📗 linguistics / ⏱️ conciseness')
     st.caption('The average reading time of language thoughts in seconds based on average reading speed (lower is more concise).')
+    
     col1, col2 = st.columns(2)
 
     data = conciseness_per_week()
@@ -295,6 +291,7 @@ def readability_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 📰 readability')
     st.caption('The Flesch-Kincaid grade level is an estimate for how many years of formal education one needs to understand a text.')
+    
     col1, col2 = st.columns(2)
 
     data = readability_per_week()
@@ -320,6 +317,7 @@ def objectivity_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 📏 objectivity')
     st.caption('A measure of how much your language thoughts appear to describe facts, rather than opinions.')
+    
     col1, col2 = st.columns(2)
 
     data = objectivity_per_week()
@@ -345,6 +343,7 @@ def sentiment_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 💚 sentiment')
     st.caption('A measure of how positive your language thoughts are.')
+    
     col1, col2 = st.columns(2)
 
     data = sentiment_per_week()
@@ -370,10 +369,10 @@ def interests_subsection():
     st.markdown('---')
     st.header('📗 linguistics / 🎨 interests')
     st.caption('Keywords derived from your language thoughts.')
+    
     col1, col2 = st.columns(2)
     
     data = interests()
-    print(pd.DataFrame().append(data))
     fig = px.timeline(data, x_start='start', x_end='end', y='keyword', color_discrete_sequence=['#228b22'], text='keyword', title='timeline of interests')
     fig.update_yaxes(autorange='reversed')
     fig.update_layout(showlegend=False)
@@ -381,6 +380,7 @@ def interests_subsection():
     fig.update_yaxes(title_text='', showticklabels=False)
     fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
+    
     col1.plotly_chart(fig)
 
     fig = px.bar(data, x='keyword', y='count', color_discrete_sequence=['#228b22'], title='thoughts by interest')
@@ -396,6 +396,7 @@ def projection_subsection():
     st.markdown('---')
     st.header('🖼️ semantics / 🌌 projection')
     st.caption('Low-dimensional visualizations of the high-dimensional semantics of your thoughts.')
+    
     col1, col2 = st.columns(2)
 
     data = projection_2d()
@@ -453,3 +454,30 @@ def discovery_subsection():
     fig.update_xaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     fig.update_yaxes(showline=True, linewidth=1, linecolor='#474539', mirror=True)
     col2.plotly_chart(fig)
+
+
+def footer_section():
+    footer = '''
+    ---
+    <style>
+    button {
+        border: 4px solid;
+        border-color: #228b22;
+        border-radius: 4px;
+        background-color: #228b22;
+        color: #fffffd;
+        font-weight: bold;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    </style>
+    <center>
+        <div>
+            <a href="https://paulbricman.com/contact"><button>send feedback</button></a>
+            <a href="https://github.com/paulbricman/ideoscope"><button>learn more</button></a>
+            <a href="https://github.com/sponsors/paulbricman"><button>support me 🤍</button></a>
+        </div>
+    </center>
+    '''
+
+    st.markdown(footer, unsafe_allow_html=True)

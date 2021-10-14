@@ -36,3 +36,4 @@ else:
     # semantics
     projection_subsection()
     discovery_subsection()
+    footer_section()
