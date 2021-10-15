@@ -4,3 +4,9 @@ backgroundColor="#fffffd"
 secondaryBackgroundColor="#eeeeee"
 textColor="#474539"
 font="monospace"
+
+[server]
+headless=true
+
+[browser]
+serverAddress="0.0.0.0"

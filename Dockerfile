@@ -1,4 +1,5 @@
 FROM ubuntu
+RUN echo new stuff!
 RUN apt update
 RUN apt install -y git python3 python3-pip
 RUN cd ~ && git clone https://github.com/paulbricman/ideoscope
