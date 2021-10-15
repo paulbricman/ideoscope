@@ -7,6 +7,7 @@ font="monospace"
 
 [server]
 headless=true
+enableCORS=false
 
 [browser]
 serverAddress="0.0.0.0"
