@@ -36,6 +36,13 @@ streamlit run main.py
 
 Your ideoscope should be available at `localhost:8501`.
 
+# Further Reading
+
+- [conducting an ideoscopy](https://paulbricman.com/reflections/conducting-an-ideoscopy)
+- [saving versus sampling](https://paulbricman.com/reflections/saving-versus-sampling)
+- [ideoponics](https://paulbricman.com/reflections/ideoponics)
+- [navigating worldviews](https://paulbricman.com/reflections/navigating-ideology)
+
 # Screenshots
 
 ![mockuper(1)](https://user-images.githubusercontent.com/20104026/137455890-12ef95ce-b73a-4cb4-bdd0-c204621d2b58.png)
