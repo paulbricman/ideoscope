@@ -10,7 +10,7 @@ An ideoscope (noun. /aɪdɪɒskoʊp/, plural: ideoscopes) is an instrument for m
 
 **Note**: In order for the metrics to be decently informative, it's recommended that you use your conceptarium regularly for around 2 months before conducting an ideoscopy.
 
-The ideoscope is can either be deployed from source or using Docker.
+The ideoscope can either be deployed from source or using Docker.
 
 **Note**: Some of the metrics computed by the ideoscope are significantly more compute-intensive than the day-by-day needs of the conceptarium. For instance, measures of semantic space coverage rely on sampling a huge number of random points and checking whether they manage to "hit" one of your thoughts (i.e. Monte Carlo approximation). For this reason, it's recommended that you run the ideoscope on at least consumer-grade hardware (i.e. not on a Raspberry Pi).
 
