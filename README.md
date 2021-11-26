@@ -16,7 +16,7 @@ The ideoscope can either be deployed from source or using Docker.
 
 ### Docker
 
-To deploy the conceptarium using Docker, first make sure to have it installed, then simply run the following.
+To deploy the ideoscope using Docker, first make sure to have it installed, then simply run the following.
 
 ```
 docker run -p 8501:8501 paulbricman/ideoscope 
