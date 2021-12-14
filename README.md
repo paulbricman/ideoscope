@@ -1,3 +1,13 @@
+---
+title: ideoscope
+emoji: 🔬
+colorFrom: green
+colorTo: gray
+sdk: streamlit
+app_file: main.py
+pinned: false
+---
+
 ![mockuper](https://user-images.githubusercontent.com/20104026/137454146-7f1d9c78-b833-4070-a3e9-7caa27cd4746.png)
 
 # Ideoscope
