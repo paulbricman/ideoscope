@@ -3,7 +3,7 @@ from components import *
 from data import *
 import nltk
 
-nltk.download('punkt')
+nltk.download(['brown', 'punkt', 'wordnet', 'averaged_perceptron_tagger'])
 
 st.set_page_config(
     page_title='ideoscope',
