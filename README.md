@@ -20,13 +20,13 @@ An ideoscope (noun. /aɪdɪɒskoʊp/, plural: ideoscopes) is an instrument for m
 
 **Note**: In order for the metrics to be decently informative, it's recommended that you use your conceptarium regularly for around 2 months before conducting an ideoscopy.
 
-The ideoscope is can either be deployed from source or using Docker.
+The ideoscope can either be deployed from source or using Docker.
 
 **Note**: Some of the metrics computed by the ideoscope are significantly more compute-intensive than the day-by-day needs of the conceptarium. For instance, measures of semantic space coverage rely on sampling a huge number of random points and checking whether they manage to "hit" one of your thoughts (i.e. Monte Carlo approximation). For this reason, it's recommended that you run the ideoscope on at least consumer-grade hardware (i.e. not on a Raspberry Pi).
 
 ### Docker
 
-To deploy the conceptarium using Docker, first make sure to have it installed, then simply run the following.
+To deploy the ideoscope using Docker, first make sure to have Docker installed, then simply run the following.
 
 ```
 docker run -p 8501:8501 paulbricman/ideoscope 
@@ -45,6 +45,13 @@ streamlit run main.py
 ```
 
 Your ideoscope should be available at `localhost:8501`.
+
+# Further Reading
+
+- [conducting an ideoscopy](https://paulbricman.com/reflections/conducting-an-ideoscopy)
+- [saving versus sampling](https://paulbricman.com/reflections/saving-versus-sampling)
+- [ideoponics](https://paulbricman.com/reflections/ideoponics)
+- [navigating worldviews](https://paulbricman.com/reflections/navigating-ideology)
 
 # Screenshots
 
