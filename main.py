@@ -1,6 +1,9 @@
 import streamlit as st
 from components import *
 from data import *
+import nltk
+
+nltk.download('punkt')
 
 st.set_page_config(
     page_title='ideoscope',
