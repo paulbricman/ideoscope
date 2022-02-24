@@ -14,13 +14,27 @@ from sklearn.decomposition import PCA
 
 
 def fetch_conceptarium():
-    conceptarium_url = st.session_state.conceptarium_url
-    if conceptarium_url[-1] != '/':
-       conceptarium_url += '/'
-    
-    conceptarium_url += 'find/lang/json?content=irrelevant&top_k=100000&silent=True'
-    conceptarium_json = requests.get(conceptarium_url).json()
-    st.session_state.conceptarium_json = conceptarium_json
+    conceptarium_url = st.session_state['conceptarium_url']
+    if not conceptarium_url.startswith('http://'):
+        conceptarium_url = 'http://' + conceptarium_url
+    if conceptarium_url[-1] == '/':
+        conceptarium_url = conceptarium_url[:-1]
+
+    conceptarium_url += ':8000/find'
+    conceptarium = requests.get(conceptarium_url, params={
+        'query': '',
+        'return_embeddings': True
+    }, headers={
+        'authorization': 'Bearer ' + st.session_state['access_token']
+    }).json()
+    conceptarium = conceptarium['authorized_thoughts']
+
+    for e_idx, e in enumerate(conceptarium):
+        conceptarium[e_idx]['embedding'] = conceptarium[e_idx]['embeddings']['text_image']
+        conceptarium[e_idx]['activation'] = np.log(e['interest'] / (1 - 0.9)) - \
+            0.9 * np.log((now() - e['timestamp']) / (3600 * 24) + 0.1)
+
+    st.session_state['conceptarium_json'] = conceptarium
 
 
 def birth_rate_over_past_day():
@@ -94,16 +108,16 @@ def population_pyramid_of_fittest_quartile():
     conceptarium = sorted(conceptarium, key=lambda x: x['activation'])
     fittest = conceptarium[:math.ceil(len(conceptarium) * 0.25)]
 
-    fittest_language = [e for e in fittest if e['modality'] == 'language']
-    fittest_imagery = [e for e in fittest if e['modality'] == 'imagery']
+    fittest_text = [e for e in fittest if e['modality'] == 'text']
+    fittest_imagery = [e for e in fittest if e['modality'] == 'image']
 
-    if len(fittest_language) > 0:
-        fittest_language_age = [
-            int((now() - e['timestamp']) / (60 * 60 * 24 * 7)) for e in fittest_language]
-        fittest_language_age = [fittest_language_age.count(
-            e) for e in range(max(fittest_language_age) + 1)]
+    if len(fittest_text) > 0:
+        fittest_text_age = [
+            int((now() - e['timestamp']) / (60 * 60 * 24 * 7)) for e in fittest_text]
+        fittest_text_age = [fittest_text_age.count(
+            e) for e in range(max(fittest_text_age) + 1)]
     else:
-        fittest_language_age = []
+        fittest_text_age = []
 
     if len(fittest_imagery) > 0:
         fittest_imagery_age = [
@@ -113,7 +127,7 @@ def population_pyramid_of_fittest_quartile():
     else:
         fittest_imagery_age = []
 
-    return fittest_language_age, fittest_imagery_age
+    return fittest_text_age, fittest_imagery_age
 
 
 def variability_over_past_week():
@@ -139,7 +153,7 @@ def aggregate_variability():
 def variability_of_fittest_quartile():
     conceptarium = st.session_state.conceptarium_json
     conceptarium = sorted(conceptarium, key=lambda x: x['activation'])
-    fittest = conceptarium[:math.ceil(len(conceptarium) * 0.25)]
+    fittest = conceptarium[: math.ceil(len(conceptarium) * 0.25)]
     embeddings = [e['embedding'] for e in fittest]
     centroid = np.mean(embeddings, axis=0)
     return round(np.mean([cos_dist(e, centroid) for e in embeddings]) * 100, 2)
@@ -307,7 +321,7 @@ def conciseness_per_week():
     for age in range(max_age):
         thoughts = [e for e in conceptarium if e['age'] == age]
         lengths = [len(e['content'].split(' ')) / 130 *
-                   60 for e in thoughts if e['modality'] == 'language']
+                   60 for e in thoughts if e['modality'] == 'text']
         data[age] = np.mean(lengths)
 
     return data
@@ -318,7 +332,7 @@ def conciseness_distribution_over_past_month():
     thoughts = [e for e in conceptarium if int(
         (now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1]
     data = [len(e['content'].split(' ')) / 130 *
-            60 for e in thoughts if e['modality'] == 'language']
+            60 for e in thoughts if e['modality'] == 'text']
     return data
 
 
@@ -333,7 +347,7 @@ def readability_per_week():
 
     for age in range(max_age):
         thoughts = [e for e in conceptarium if e['age']
-                    == age and e['modality'] == 'language']
+                    == age and e['modality'] == 'text']
         text = ' '.join([e['content'] for e in thoughts])
         blob = TextBlob(text)
         asl = len(blob.words) / len(blob.sentences)
@@ -347,7 +361,7 @@ def readability_per_week():
 def readability_distribution_over_past_month():
     conceptarium = st.session_state.conceptarium_json
     thoughts = [e for e in conceptarium if int(
-        (now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'language']
+        (now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'text']
     data = [0] * len(thoughts)
 
     for thought_idx, thought in enumerate(thoughts):
@@ -372,7 +386,7 @@ def objectivity_per_week():
 
     for age in range(max_age):
         thoughts = [e for e in conceptarium if e['age']
-                    == age and e['modality'] == 'language']
+                    == age and e['modality'] == 'text']
         text = TextBlob(' '.join([e['content'] for e in thoughts]))
         data[age] = 1 - text.sentiment[1]
 
@@ -382,7 +396,7 @@ def objectivity_per_week():
 def objectivity_distribution_over_past_month():
     conceptarium = st.session_state.conceptarium_json
     thoughts = [e for e in conceptarium if int(
-        (now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'language']
+        (now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'text']
     data = [0] * len(thoughts)
 
     for thought_idx, thought in enumerate(thoughts):
@@ -403,7 +417,7 @@ def sentiment_per_week():
 
     for age in range(max_age):
         thoughts = [e for e in conceptarium if e['age']
-                    == age and e['modality'] == 'language']
+                    == age and e['modality'] == 'text']
         text = TextBlob(' '.join([e['content'] for e in thoughts]))
         data[age] = text.sentiment[0]
 
@@ -413,7 +427,7 @@ def sentiment_per_week():
 def sentiment_distribution_over_past_month():
     conceptarium = st.session_state.conceptarium_json
     thoughts = [e for e in conceptarium if int(
-        (now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'language']
+        (now() - e['timestamp']) / (60 * 60 * 24 * 30)) < 1 and e['modality'] == 'text']
     data = [0] * len(thoughts)
 
     for thought_idx, thought in enumerate(thoughts):
@@ -425,10 +439,10 @@ def sentiment_distribution_over_past_month():
 
 def interests():
     conceptarium = st.session_state.conceptarium_json
-    language_thoughts = [
-        e for e in conceptarium if e['modality'] == 'language']
-    language_thoughts = sorted(language_thoughts, key=lambda x: x['timestamp'])
-    text = ' '.join([e['content'] for e in language_thoughts])
+    text_thoughts = [
+        e for e in conceptarium if e['modality'] == 'text']
+    text_thoughts = sorted(text_thoughts, key=lambda x: x['timestamp'])
+    text = ' '.join([e['content'] for e in text_thoughts])
     text = TextBlob(text.lower())
     keywords = text.noun_phrases
     keywords = [e.singularize() for e in keywords]
@@ -437,7 +451,7 @@ def interests():
     data = pd.DataFrame(columns=['keyword', 'start', 'end', 'count'])
 
     for keyword in keywords:
-        instances = [e for e in language_thoughts if keyword in e['content']]
+        instances = [e for e in text_thoughts if keyword in e['content']]
         if len(instances) > 0:
             start = datetime.fromtimestamp(
                 instances[0]['timestamp']).strftime('%Y-%m-%d')
@@ -454,13 +468,13 @@ def interests():
 
 def projection_2d():
     conceptarium = st.session_state.conceptarium_json
-    thoughts = [e for e in conceptarium if e['modality'] == 'language']
+    thoughts = [e for e in conceptarium if e['modality'] == 'text']
     embeddings = [e['embedding'] for e in thoughts]
     reducer = TSNE(2)
     embeddings_2d = reducer.fit_transform(embeddings)
     data = [[*emb, thoughts[emb_idx]['modality']]
             for emb_idx, emb in enumerate(embeddings_2d)]
-    data = [e + ['*image*'] if e[2] == 'imagery' else e +
+    data = [e + ['*image*'] if e[2] == 'image' else e +
             [thoughts[e_idx]['content']] for e_idx, e in enumerate(data)]
     data = pd.DataFrame(data, columns=['x', 'y', 'modality', 'content'])
     data.content = data.content.str.wrap(40)
@@ -470,14 +484,14 @@ def projection_2d():
 
 def projection_3d():
     conceptarium = st.session_state.conceptarium_json
-    thoughts = [e for e in conceptarium if e['modality'] == 'language']
+    thoughts = [e for e in conceptarium if e['modality'] == 'text']
     embeddings = [e['embedding'] for e in thoughts]
     reducer = TSNE(3)
     embeddings_3d = reducer.fit_transform(embeddings)
     data = [[*emb, thoughts[emb_idx]['modality']]
             for emb_idx, emb in enumerate(embeddings_3d)]
-    data = [e + ['*imagery*'] if conceptarium[e_idx]['modality'] ==
-            'imagery' else e + [thoughts[e_idx]['content']] for e_idx, e in enumerate(data)]
+    data = [e + ['*image*'] if conceptarium[e_idx]['modality'] ==
+            'image' else e + [thoughts[e_idx]['content']] for e_idx, e in enumerate(data)]
     data = [e + [3] for e in data]
     data = pd.DataFrame(
         data, columns=['x', 'y', 'z', 'modality', 'content', 'size'])
